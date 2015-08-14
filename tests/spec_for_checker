@@ -1,0 +1,132 @@
+#!/usr/bin/env groovy
+
+SUCCESS = "✔"
+FAILED  = "✖"
+
+CODE_FOLDER_ARG = "--codeFolder"
+CONFIG_FILE_ARG = "--configFile"
+
+SCRIPT_DIR            = getClass().protectionDomain.codeSource.location.path.replace("/${this.class.name}","")
+CHECKER               = "${SCRIPT_DIR}/../bin/checkstyle.groovy"
+DEFAULT_CONFIG_FILE   = "${SCRIPT_DIR}/config_default.json"
+CUSTOM_CONFIG_FILE    = "${SCRIPT_DIR}/config_with_definitions.json"
+FIXTURE_CODEBASE_PATH = "${SCRIPT_DIR}/test_repo/fixture_code_base"
+
+
+
+/** Setup **/
+def cliOptions = setupCli()
+
+if(cliOptions.skipSetup) {
+	println "${SUCCESS} Skipping setup"
+} else {
+	setupTestBed()
+}
+
+
+
+/** Calling Tests **/
+println "\n[TESTS]"
+checker_shouldFail_whenNoArgsPassed()
+checker_shouldFail_whenConfigFileIsntPassed()
+checker_shouldFail_whenConfigFileIsntPassed()
+checker_shouldFail_whenMalformedJsonConfigIsPassed()
+checker_shouldFail_whenNonExistentDirIsPassed()
+
+checker_givesCorrectResult_WhenDefaultConfigInputsArePassed()
+checker_givesCorrectResult_WhenCustomConfigInputsArePassed()
+
+/** Tests **/
+def checker_shouldFail_whenNoArgsPassed() {
+	def checker = "${CHECKER}".execute()
+	checker.waitFor()
+	assert checker.exitValue() != 0 
+	println "${SUCCESS} checker_shouldFail_whenNoArgsPassed"
+}
+
+def checker_shouldFail_whenConfigFileIsntPassed() {
+	def checker = "${CHECKER} ${CODE_FOLDER_ARG}=${FIXTURE_CODEBASE_PATH}".execute()
+	checker.waitFor()
+	assert checker.exitValue() != 0 
+	println "${SUCCESS} checker_shouldFail_whenConfigFileIsntPassed"
+}
+
+def checker_shouldFail_whenCodeDirIsntPassed() {
+	def checker = "${CHECKER} ${CONFIG_FILE_ARG}=${DEFAULT_CONFIG_FILE}".execute()
+	checker.waitFor()
+	assert checker.exitValue() != 0 
+	println "${SUCCESS} checker_shouldFail_whenNoArgsPassed"
+}
+
+def checker_shouldFail_whenMalformedJsonConfigIsPassed() {
+	def checker = "${CHECKER} ${CONFIG_FILE_ARG}=${SCRIPT_DIR}/malformed_file.json ${CODE_FOLDER_ARG}=${FIXTURE_CODEBASE_PATH} ".execute()
+	checker.waitFor()
+	assert checker.exitValue() != 0
+	println "${SUCCESS} checker_shouldFail_whenMalformedJsonConfigIsPassed"
+}
+
+def checker_shouldFail_whenNonExistentDirIsPassed() {
+	def checker = "${CHECKER} ${CONFIG_FILE_ARG}=${DEFAULT_CONFIG_FILE} ${CODE_FOLDER_ARG}=${SCRIPT_DIR}/some_imaginary_folder".execute()
+	checker.waitFor()
+	assert checker.exitValue() != 0
+	println "${SUCCESS} checker_shouldFail_whenNonExistentDirIsPassed"
+}
+
+def checker_givesCorrectResult_WhenDefaultConfigInputsArePassed() {
+	def checker = "${CHECKER} ${CONFIG_FILE_ARG}=${DEFAULT_CONFIG_FILE} ${CODE_FOLDER_ARG}=${FIXTURE_CODEBASE_PATH} ".execute()
+	checker.waitFor()
+	assert checker.exitValue() == 0
+	def lineCount = 0
+	checker.text.eachLine {++lineCount}
+	assert lineCount == 18
+	println "${SUCCESS} checker_givesCorrectResult_WhenDefaultConfigInputsArePassed"
+}
+
+def checker_givesCorrectResult_WhenCustomConfigInputsArePassed() {
+	def checker = "${CHECKER} ${CONFIG_FILE_ARG}=${CUSTOM_CONFIG_FILE} ${CODE_FOLDER_ARG}=${FIXTURE_CODEBASE_PATH} ".execute()
+	checker.waitFor()
+	assert checker.exitValue() == 0
+	def lineCount = 0
+	checker.text.eachLine {++lineCount}
+	assert lineCount == 3
+	println "${SUCCESS} checker_givesCorrectResult_WhenCustomConfigInputsArePassed"
+}
+
+
+/** Internal helper functions **/
+def setupCli() {
+	def cli = new CliBuilder(usage:"ls")
+	cli.s(longOpt: "skipSetup", "display all files")
+	cli.parse(args)
+}
+
+def setupTestBed() {
+    setupFixtureRepo()
+	def checkstyleJar = new File("${SCRIPT_DIR}/../bin/checkstyle.jar")
+	if (!checkstyleJar.exists()) {
+		"wget http://downloads.sourceforge.net/project/checkstyle/checkstyle/6.9/checkstyle-6.9-all.jar -o ${checkstyleJar.path}".execute().waitFor()
+		println "${SUCCESS} Downloaded checkstyle.jar"
+	}
+}
+
+def setupFixtureRepo() {
+
+    //Lets not worry about updates for now
+    "rm -rf ${FIXTURE_CODEBASE_PATH}".execute().waitFor()
+
+	def cloneFixtureRepo = "git clone https://github.com/sivakumar-kailasam/fixture_code_base.git ${FIXTURE_CODEBASE_PATH}".execute()
+    cloneFixtureRepo.waitFor()
+
+	if (cloneFixtureRepo.exitValue()) {
+		println cloneFixtureRepo.err.text
+		println "${FAILED} Can't proceed further since we don't have a folder to run tests on"
+		return
+	} else {
+		println "${SUCCESS} Cloned the fixture repo \n ${cloneFixtureRepo.text}"
+	}
+
+}
+
+
+
+

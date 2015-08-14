@@ -1,4 +1,0 @@
-#!/usr/bin/env groovy
-def printErr = System.err.&println
-
-printErr new File("/config.json").text 
