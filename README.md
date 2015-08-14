@@ -9,7 +9,7 @@ engines:
     config: 'config/checkstyle/checkstyle.xml'
 ```
 
-By default the engine runs the [google checker](https://github.com/sivakumar-kailasam/codeclimate-checkstyle/blob/master/config/google_checkstyle.xml) against your code if the config property is not defined
+By default the engine runs the [code climate checker](https://github.com/sivakumar-kailasam/codeclimate-checkstyle/blob/master/config/codeclimate_checkstyle.xml) against your code if the config property is not defined
 
 
 ### Testing the checker

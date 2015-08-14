@@ -26,7 +26,7 @@ def checkerDefinitionFile = null
 if (configJson.config?.trim()) {
 	checkerDefinitionFile = new File(codeFolder, configJson.config)
 } else {
-    checkerDefinitionFile = new File(scriptDir.replace('/bin','/config'), 'google_checkstyle.xml')
+    checkerDefinitionFile = new File(scriptDir.replace('/bin','/config'), 'codeclimate_checkstyle.xml')
 }
 assert checkerDefinitionFile.exists() && checkerDefinitionFile.isFile()
 
