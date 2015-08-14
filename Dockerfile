@@ -1,8 +1,6 @@
 FROM java
 
-
 MAINTAINER Sivakumar Kailasam 
-
 
 # Groovy setup, defined multiple RUN steps for better caching resulting in quicker builds
 RUN cd /tmp 
