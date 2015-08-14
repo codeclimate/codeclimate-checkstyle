@@ -4,8 +4,7 @@ FROM java
 MAINTAINER Sivakumar Kailasam 
 
 
-# Groovy setup, defined multiple RUN steps for better caching resulting in
-# quicker builds
+# Groovy setup, defined multiple RUN steps for better caching resulting in quicker builds
 RUN cd /tmp 
 RUN wget http://dl.bintray.com/groovy/maven/groovy-binary-2.4.0-beta-4.zip 
 RUN unzip groovy-binary-2.4.0-beta-4.zip 
@@ -30,4 +29,3 @@ COPY . /usr/src/app
 VOLUME "/code"
 
 CMD ["/usr/src/app/bin/checkstyle.groovy", "--codeFolder=/code","--configFile=/config.json"]
-
