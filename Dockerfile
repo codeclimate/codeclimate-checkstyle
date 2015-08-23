@@ -21,8 +21,8 @@ RUN mv checkstyle-6.9-all.jar bin/checkstyle.jar
 WORKDIR /code
 COPY . /usr/src/app
 
-#RUN adduser app -u 1212 --gid 9000
-#USER app
+RUN useradd -r -s /bin/false app 
+USER app
 
 VOLUME "/code"
 
