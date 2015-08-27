@@ -56,15 +56,18 @@ fileToAnalyse.each {
 		       	description: errTag.@message,
 		       	categories: [ "Style" ],
 		       	location: [
-		       		path: it.replace(codeFolder.path, ''),
+		       		path: it.replace(codeFolder.path, '').substring(1),
 		       		positions: [
 		       			begin: [
 		       				line: errTag.@line,
-		       				column: errTag.@column ? errTag.@column : 1
+		       				column: errTag.@column ? errTag.@column : 1,
 		       			],
-		       			end: errTag.@line
-		       		] 
-		       	]
+		       			end: [
+		       				line: errTag.@line,
+		       				column: errTag.@column ? errTag.@column : 1,
+		       			]
+		       		]
+		       ]
 		])
 		println "${defect}\0"
 	}
