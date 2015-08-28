@@ -102,11 +102,6 @@ def setupCli() {
 
 def setupTestBed() {
     setupFixtureRepo()
-	def checkstyleJar = new File("${SCRIPT_DIR}/../bin/checkstyle.jar")
-	if (!checkstyleJar.exists()) {
-		"wget http://downloads.sourceforge.net/project/checkstyle/checkstyle/6.9/checkstyle-6.9-all.jar -o ${checkstyleJar.path}".execute().waitFor()
-		println "${SUCCESS} Downloaded checkstyle.jar"
-	}
 }
 
 def setupFixtureRepo() {
