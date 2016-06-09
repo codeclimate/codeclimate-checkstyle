@@ -5,80 +5,78 @@ import groovy.json.JsonOutput
 import groovy.util.FileNameFinder
 import groovy.util.XmlParser
 
-
 def appContext = setupContext(args)
-assert appContext
-
-
-def configJson = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8")
-
-
+def includePaths = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8").include_paths?.join(" ")
 def codeFolder = new File(appContext.codeFolder)
-assert codeFolder.exists()
 
+def filesToAnalyse = new FileNameFinder().getFileNames(appContext.codeFolder, includePaths)
 
-def excludeString = ".codeclimate.yml " + configJson.exclude_paths.join(" ")
-
-
-def scriptDir = getClass().protectionDomain.codeSource.location.path.replace("/${this.class.name}.groovy","")
-def checkerDefinitionFromConfig = configJson.config
-def checkerDefinitionFile = null
-if (configJson.config?.trim()) {
-	checkerDefinitionFile = new File(codeFolder, configJson.config)
-} else {
-    checkerDefinitionFile = new File(scriptDir.replace('/bin','/config'), 'codeclimate_checkstyle.xml')
+def i = filesToAnalyse.iterator()
+while(i.hasNext()) {
+    string = i.next()
+    if( !string.endsWith(".java")) {
+        i.remove()
+    }
 }
-assert checkerDefinitionFile.exists() && checkerDefinitionFile.isFile()
 
+filesToAnalyse = filesToAnalyse.join(" ")
+if (filesToAnalyse.isEmpty()) {
+    System.exit(0)
+}
 
-def fileToAnalyse = new FileNameFinder().getFileNames(appContext.codeFolder,'**/*', excludeString)
+def sout = new StringBuffer()
+def serr = new StringBuffer()
 
-fileToAnalyse.each {
-	def sout = new StringBuffer()
-	def serr = new StringBuffer()
+def outputFilePath = "/tmp/analysis.xml"
 
-	def outputFilePath = "/tmp/${java.util.UUID.randomUUID()}.xml"
+def analysis = "java -jar /usr/src/app/bin/checkstyle.jar -c /usr/src/app/config/codeclimate_checkstyle.xml -f xml -o ${outputFilePath} ${filesToAnalyse}".execute()
+analysis.consumeProcessOutput(sout, serr)
+analysis.waitFor()
+if (analysis.exitValue() !=0 ) {
+	System.err << serr.toString()
+}
 
-	def analysis = "java -jar ${scriptDir}/checkstyle.jar -c ${checkerDefinitionFile.path} ${it} -f xml -o ${outputFilePath}".execute()
-	analysis.consumeProcessOutput(sout, serr)
-	analysis.waitFor()
-	if (analysis.exitValue() !=0 ) {
-		System.err << serr.toString()
-	}
+def outputFile = new File(outputFilePath)
+def analysisResult = new XmlParser().parseText(outputFile.text)
 
-	def outputFile = new File(outputFilePath)
-	def analysisResult = new XmlParser().parseText(outputFile.text)
-
-	analysisResult.file?.error.findAll { errTag ->
+analysisResult.file.findAll { file ->
+	file.error.findAll { errTag ->
 		def defect = JsonOutput.toJson([
 			type: "issue",
-		       	check_name: errTag.@source,
+		       	check_name: cleanupCheckName(errTag.@source),
 		       	description: errTag.@message,
 		       	categories: [ "Style" ],
 		       	location: [
-		       		path: it.replace(codeFolder.path, '').substring(1),
+		       		path: file.@name.replaceAll("/code/",""),
 		       		positions: [
 		       			begin: [
-		       				line: errTag.@line,
-		       				column: errTag.@column ? errTag.@column : 1,
+		       				line: errTag.@line.toInteger(),
+		       				column: errTag.@column ? errTag.@column.toInteger() : 1,
 		       			],
 		       			end: [
-		       				line: errTag.@line,
-		       				column: errTag.@column ? errTag.@column : 1,
+		       				line: errTag.@line.toInteger(),
+		       				column: errTag.@column ? errTag.@column.toInteger() : 1,
 		       			]
 		       		]
 		       ],
-					 remediation_points: 1000,
+					 content: [
+					 		body: errTag.@description,
+					 ],
+					 remediation_points: 150000,
 		])
 		println "${defect}\0"
 	}
-	outputFile.delete()
 }
 
+outputFile.delete()
 
 def setupContext(cmdArgs) {
 	def cli = new CliBuilder(usage:"${this.class.name}")
 	cli._(longOpt: "configFile", required: true, args: 1, "Path to configuration json file")
 	cli._(longOpt: "codeFolder", required: true, args: 1, "Path to code folder")
 	cli.parse(cmdArgs)
+}
+
+def cleanupCheckName(checkName) {
+	checkName.tokenize(".")[-1].split("(?=[A-Z])").join(" ")
 }
