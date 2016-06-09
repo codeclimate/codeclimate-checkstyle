@@ -6,7 +6,8 @@ import groovy.util.FileNameFinder
 import groovy.util.XmlParser
 
 def appContext = setupContext(args)
-def includePaths = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8").include_paths?.join(" ")
+def parsedConfig = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8")
+def includePaths = parsedConfig.include_paths?.join(" ")
 def codeFolder = new File(appContext.codeFolder)
 
 def filesToAnalyse = new FileNameFinder().getFileNames(appContext.codeFolder, includePaths)
@@ -24,12 +25,19 @@ if (filesToAnalyse.isEmpty()) {
     System.exit(0)
 }
 
+def ruleSetPath
+if ( parsedConfig.config && (new File(parsedConfig.config).exists()) ) {
+  ruleSetPath = parsedConfig.config
+} else {
+  ruleSetPath = "/usr/src/app/config/codeclimate_checkstyle.xml"
+}
+
 def sout = new StringBuffer()
 def serr = new StringBuffer()
 
 def outputFilePath = "/tmp/analysis.xml"
 
-def analysis = "java -jar /usr/src/app/bin/checkstyle.jar -c /usr/src/app/config/codeclimate_checkstyle.xml -f xml -o ${outputFilePath} ${filesToAnalyse}".execute()
+def analysis = "java -jar /usr/src/app/bin/checkstyle.jar -c ${ruleSetPath} -f xml -o ${outputFilePath} ${filesToAnalyse}".execute()
 analysis.consumeProcessOutput(sout, serr)
 analysis.waitFor()
 if (analysis.exitValue() !=0 ) {
