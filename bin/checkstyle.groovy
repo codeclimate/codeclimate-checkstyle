@@ -27,7 +27,7 @@ if (filesToAnalyse.isEmpty()) {
 
 def ruleSetPath
 if ( parsedConfig.config && (new File(parsedConfig.config).exists()) ) {
-  ruleSetPath = parsedConfig.config
+  ruleSetPath = "/code/${parsedConfig.config}"
 } else {
   ruleSetPath = "/usr/src/app/config/codeclimate_checkstyle.xml"
 }
