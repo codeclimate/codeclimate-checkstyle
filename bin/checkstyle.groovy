@@ -67,9 +67,6 @@ analysisResult.file.findAll { file ->
 		       			]
 		       		]
 		       ],
-					 content: [
-					 		body: errTag.@description,
-					 ],
 					 remediation_points: 150000,
 		])
 		println "${defect}\0"
