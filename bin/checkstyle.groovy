@@ -36,15 +36,17 @@ def sout = new StringBuffer()
 def serr = new StringBuffer()
 
 def outputFilePath = "/tmp/analysis.xml"
+def outputFile = new File(outputFilePath)
 
 def analysis = "java -jar /usr/src/app/bin/checkstyle.jar -c ${ruleSetPath} -f xml -o ${outputFilePath} ${filesToAnalyse}".execute()
+
 analysis.consumeProcessOutput(sout, serr)
-analysis.waitFor()
+analysis.waitForProcessOutput()
+
 if (analysis.exitValue() !=0 ) {
 	System.err << serr.toString()
 }
 
-def outputFile = new File(outputFilePath)
 def analysisResult = new XmlParser().parseText(outputFile.text)
 
 analysisResult.file.findAll { file ->
