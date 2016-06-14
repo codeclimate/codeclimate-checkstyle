@@ -22,7 +22,7 @@ while(i.hasNext()) {
 
 filesToAnalyse = filesToAnalyse.join(" ")
 if (filesToAnalyse.isEmpty()) {
-    System.exit(0)
+	System.exit(0)
 }
 
 def ruleSetPath
@@ -35,19 +35,23 @@ if ( parsedConfig.config && (new File(parsedConfig.config).exists()) ) {
 def sout = new StringBuffer()
 def serr = new StringBuffer()
 
-def outputFilePath = "/tmp/analysis.xml"
-def outputFile = new File(outputFilePath)
-
-def analysis = "java -jar /usr/src/app/bin/checkstyle.jar -c ${ruleSetPath} -f xml -o ${outputFilePath} ${filesToAnalyse}".execute()
+def analysis = "java -jar /usr/src/app/bin/checkstyle.jar -c ${ruleSetPath} -f xml ${filesToAnalyse}".execute()
 
 analysis.consumeProcessOutput(sout, serr)
-analysis.waitForProcessOutput()
+analysis.waitFor()
 
 if (analysis.exitValue() !=0 ) {
 	System.err << serr.toString()
+	System.exit(0)
 }
 
-def analysisResult = new XmlParser().parseText(outputFile.text)
+analysis.waitForProcessOutput()
+
+if (sout.toString().isEmpty()) {
+	System.exit(0)
+}
+
+def analysisResult = new XmlParser().parseText(sout.toString())
 
 analysisResult.file.findAll { file ->
 	file.error.findAll { errTag ->
@@ -74,8 +78,6 @@ analysisResult.file.findAll { file ->
 		println "${defect}\0"
 	}
 }
-
-outputFile.delete()
 
 def setupContext(cmdArgs) {
 	def cli = new CliBuilder(usage:"${this.class.name}")
