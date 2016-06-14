@@ -42,7 +42,6 @@ analysis.waitFor()
 
 if (analysis.exitValue() !=0 ) {
 	System.err << serr.toString()
-	System.exit(0)
 }
 
 analysis.waitForProcessOutput()
@@ -51,7 +50,16 @@ if (sout.toString().isEmpty()) {
 	System.exit(0)
 }
 
-def analysisResult = new XmlParser().parseText(sout.toString())
+def outputLines = sout.toString().tokenize("\n")
+def xmlText = ""
+
+if(outputLines[-1] != "</checkstyle>") {
+	xmlText = outputLines[0..-2].join("\n")
+} else {
+	xmlText = outputLines.join("\n")
+}
+
+def analysisResult = new XmlParser().parseText(xmlText)
 
 analysisResult.file.findAll { file ->
 	file.error.findAll { errTag ->
