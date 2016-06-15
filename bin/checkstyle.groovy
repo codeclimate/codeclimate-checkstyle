@@ -48,6 +48,7 @@ if (analysis.exitValue() !=0 ) {
 analysis.waitForProcessOutput()
 
 if (sout.toString().isEmpty()) {
+  System.err << "Tool output is empty."
 	System.exit(1)
 }
 
@@ -64,6 +65,7 @@ def analysisResult
 
 try {
 	analysisResult = new XmlParser().parseText(xmlText)
+  System.err << xmlText
 } catch (org.xml.sax.SAXParseException e) {
 	System.err << e
 	System.err << xmlText
