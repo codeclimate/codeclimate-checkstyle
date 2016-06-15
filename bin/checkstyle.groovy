@@ -42,12 +42,13 @@ analysis.waitFor()
 
 if (analysis.exitValue() !=0 ) {
 	System.err << serr.toString()
+	System.exit(1)
 }
 
 analysis.waitForProcessOutput()
 
 if (sout.toString().isEmpty()) {
-	System.exit(0)
+	System.exit(1)
 }
 
 def outputLines = sout.toString().tokenize("\n")
@@ -59,7 +60,15 @@ if(outputLines[-1] != "</checkstyle>") {
 	xmlText = outputLines.join("\n")
 }
 
-def analysisResult = new XmlParser().parseText(xmlText)
+def analysisResult
+
+try {
+	analysisResult = new XmlParser().parseText(xmlText)
+} catch (org.xml.sax.SAXParseException e) {
+	System.err << e
+	System.err << xmlText
+	System.exit(1)
+}
 
 analysisResult.file.findAll { file ->
 	file.error.findAll { errTag ->
@@ -86,6 +95,8 @@ analysisResult.file.findAll { file ->
 		println "${defect}\0"
 	}
 }
+
+System.exit(0)
 
 def setupContext(cmdArgs) {
 	def cli = new CliBuilder(usage:"${this.class.name}")
