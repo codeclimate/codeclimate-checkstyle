@@ -42,7 +42,6 @@ analysis.waitFor()
 
 if (analysis.exitValue() !=0 ) {
 	System.err << serr.toString()
-	System.exit(1)
 }
 
 analysis.waitForProcessOutput()
