@@ -67,7 +67,7 @@ try {
   System.err << xmlText
 } catch (org.xml.sax.SAXParseException e) {
 	System.err << e
-	System.err << xmlText
+	System.err << sout.toString()
 	System.exit(1)
 }
 
