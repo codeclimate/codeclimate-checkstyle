@@ -37,14 +37,11 @@ def serr = new StringBuffer()
 
 def analysis = "java -jar /usr/src/app/bin/checkstyle.jar -c ${ruleSetPath} -f xml ${filesToAnalyse}".execute()
 
-analysis.consumeProcessOutput(sout, serr)
-analysis.waitFor()
+analysis.waitForProcessOutput(sout, serr)
 
 if (analysis.exitValue() !=0 ) {
 	System.err << serr.toString()
 }
-
-analysis.waitForProcessOutput()
 
 if (sout.toString().isEmpty()) {
   System.err << "Tool output is empty."
