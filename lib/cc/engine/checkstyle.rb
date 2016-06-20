@@ -83,7 +83,7 @@ module CC
           remediation_points: 100_000,
           severity: "info",
         }
-        # STDOUT.print "#{issue.to_json}\0"
+        STDOUT.print "#{issue.to_json}\0"
       end
 
     end
