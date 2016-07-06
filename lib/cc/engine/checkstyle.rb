@@ -13,7 +13,7 @@ module CC
         @root = root
         @engine_config = engine_config
         @io = io
-        @contents = {}
+        @contents = CC::Engine::Content.scrape_content_bodies
       end
 
       def run
@@ -67,10 +67,21 @@ module CC
         path.split("/code/")[1]
       end
 
+      def format_severity(severity)
+        case severity
+        when "info"
+          "info"
+        when "warning"
+          "normal"
+        when "error"
+          "critical"
+        end
+      end
+
       def print_issue(issue)
         issue = {
           categories: ["Style"],
-          check_name: format_check_name(issue.attributes["source"].value),
+          check_name: issue.attributes["source"].value,
           description: issue.attributes["message"].value,
           location: {
             lines: {
@@ -79,9 +90,12 @@ module CC
             },
             path: format_path(issue.parent.attributes["name"].value),
           },
+          content: {
+            body: @contents[issue.attributes["source"].value]["Description"]
+          },
           type: "issue",
           remediation_points: 100_000,
-          severity: "info",
+          severity: format_severity(issue.attributes["severity"].value),
         }
         STDOUT.print "#{issue.to_json}\0"
       end
