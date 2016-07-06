@@ -29,7 +29,7 @@ module CC
                   if subsection_name == "Package"
                     tmp_issue[subsection_name] = html.strip.split.sort.last
                   else
-                    tmp_issue[subsection_name] = issue_subsection.children.to_html
+                    tmp_issue[subsection_name] = issue_subsection.children.to_html.split("\n").map(&:strip).join
                   end
                   issue_identifier = "#{tmp_issue["Package"]}.#{issue["name"]}Check"
                   @issue_content[issue_identifier] = tmp_issue
