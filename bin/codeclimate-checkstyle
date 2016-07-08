@@ -6,7 +6,6 @@ STDOUT.sync = true
 $:.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
 
 require "cc/engine/checkstyle"
-require "cc/engine/content"
 
 if File.exist?("/config.json")
   engine_config = JSON.parse(File.read("/config.json"))

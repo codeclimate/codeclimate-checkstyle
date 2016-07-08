@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require "nokogiri"
+require "yaml"
+
+issue_content = {}
+
+if !Dir.exists? "data/"
+  `git clone git@github.com:checkstyle/checkstyle.git data/`
+end
+
+xml_files = Dir.glob("data/src/xdocs/config_*")
+xml_data = xml_files.map{|f| Nokogiri::XML(File.read(f)) }
+
+xml_data.each do |checks_file|
+  section_title = checks_file.css("head title").text.split(" ").join
+  sections = checks_file.css("body section")
+
+  if sections.length > 1
+    issue_subsections = sections[1..-1]
+
+    issue_subsections.map do |issue|
+      tmp_issue = {}
+      issue.css("subsection").each do |issue_subsection|
+
+        html = issue_subsection.children.to_html
+        if html && !html.empty?
+          subsection_name = issue_subsection["name"]
+          if subsection_name == "Package"
+            tmp_issue[subsection_name] = issue_subsection.children.to_html.strip.split.sort.last
+          elsif subsection_name == "Description"
+            children = issue_subsection.children
+            description_string = ""
+            children.each do |child|
+              if child.name == "source" || child.name == "pre"
+                description_string += child.to_html.gsub("\n","<br>")
+              else
+                description_string += child.to_html.split("\n").map(&:strip).join
+              end
+            end
+            tmp_issue[subsection_name] = description_string
+          end
+        end
+      end
+      issue_identifier = "#{tmp_issue["Package"]}.#{issue["name"]}Check"
+      issue_content[issue_identifier] = tmp_issue
+    end
+  end
+end
+
+f = File.open("check_contents.yml", "wb")
+f << issue_content.to_yaml
+f.close

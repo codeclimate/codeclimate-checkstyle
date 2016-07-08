@@ -2,6 +2,7 @@ require "digest/md5"
 require "json"
 require "posix/spawn"
 require "nokogiri"
+require "yaml"
 
 module CC
   module Engine
@@ -13,7 +14,7 @@ module CC
         @root = root
         @engine_config = engine_config
         @io = io
-        @contents = CC::Engine::Content.scrape_content_bodies
+        @contents = YAML.load(File.read("/usr/src/app/check_contents.yml"))
       end
 
       def run
