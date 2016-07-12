@@ -3,6 +3,12 @@
 require "nokogiri"
 require "yaml"
 
+ATTRIBUTION_TEXT = <<-EOF
+<p>
+<i><a href="http://checkstyle.sourceforge.net/checks.html">This documentation is written and maintained by the Checkstyle community</a> and is <a href="http://checkstyle.sourceforge.net/license.html">covered under the same license as the Checkstyle project.</a></i>
+</p>
+EOF
+
 issue_content = {}
 
 if !Dir.exists? "data/"
@@ -27,7 +33,7 @@ xml_data.each do |checks_file|
         if html && !html.empty?
           subsection_name = issue_subsection["name"]
           if subsection_name == "Package"
-            tmp_issue[subsection_name] = issue_subsection.children.to_html.strip.split.sort.last
+            tmp_issue[subsection_name] = html.strip.split.sort.last
           elsif subsection_name == "Description"
             children = issue_subsection.children
             description_string = ""
@@ -38,7 +44,7 @@ xml_data.each do |checks_file|
                 description_string += child.to_html.split("\n").map(&:strip).join
               end
             end
-            tmp_issue[subsection_name] = description_string
+            tmp_issue[subsection_name] = description_string + ATTRIBUTION_TEXT
           end
         end
       end
