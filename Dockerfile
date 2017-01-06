@@ -12,6 +12,7 @@ COPY Gemfile.lock /usr/src/app/
 WORKDIR /usr/src/app
 
 RUN echo 'deb http://ftp.de.debian.org/debian jessie-backports main' >> /etc/apt/sources.list && \
+    apt-get clean && \
     apt-get update && \
     apt-get install -y build-essential git && \
     apt-get -y install openjdk-8-jdk && \
