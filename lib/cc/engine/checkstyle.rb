@@ -81,6 +81,13 @@ module CC
       end
 
       def print_issue(issue)
+        content =
+          begin
+            key = issue.attributes["source"].value
+            @contents.fetch(key)
+          rescue KeyError
+            raise KeyError, "No description available for #{key}"
+          end
         issue = {
           categories: ["Style"],
           check_name: issue.attributes["source"].value,
@@ -93,7 +100,7 @@ module CC
             path: format_path(issue.parent.attributes["name"].value),
           },
           content: {
-            body: @contents[issue.attributes["source"].value]["Description"]
+            body: content.fetch("Description")
           },
           type: "issue",
           remediation_points: 100_000,
