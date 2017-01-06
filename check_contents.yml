@@ -708,6 +708,24 @@ com.puppycrawl.tools.checkstyle.checks.naming.AbstractClassNameCheck:
     <i><a href="http://checkstyle.sourceforge.net/checks.html">This documentation is written and maintained by the Checkstyle community</a> and is <a href="http://checkstyle.sourceforge.net/license.html">covered under the same license as the Checkstyle project.</a></i>
     </p>
   Package: "<p>com.puppycrawl.tools.checkstyle.checks.naming</p>"
+com.puppycrawl.tools.checkstyle.checks.naming.CatchParameterNameCheck:
+  Description: |
+    <p>Checks that catch parameter names conform to a format specified by the format property. Default pattern has the following characteristic:</p>
+
+    <ul>
+      <li>allows names beginning with two lowercase letters followed by at least one uppercase or lowercase letter</li>
+      <li>allows e abbreviation (suitable for exceptions end errors)</li>
+      <li>allows ex abbreviation (suitable for exceptions)</li>
+      <li>allows t abbreviation (suitable for throwables)</li>
+      <li>prohibits numbered abbreviations like e1 or t2</li>
+      <li>prohibits one letter prefixes like pException</li>
+      <li>prohibits two letter abbreviations like ie or ee</li>
+      <li>prohibits any other characters than letters</li>
+    </ul>
+
+    <i><a href="http://checkstyle.sourceforge.net/checks.html">This documentation is written and maintained by the Checkstyle community</a> and is <a href="http://checkstyle.sourceforge.net/license.html">covered under the same license as the Checkstyle project.</a></i>
+    </p>
+  Package: com.puppycrawl.tools.checkstyle.checks.naming
 com.puppycrawl.tools.checkstyle.checks.naming.ClassTypeParameterNameCheck:
   Description: |
     <p>Validates identifiers for class type parameters.</p><p>
