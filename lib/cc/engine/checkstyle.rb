@@ -9,7 +9,7 @@ module CC
     class Checkstyle
       CONFIG_FILE = "./.mdlrc".freeze
       EXTENSIONS = %w[.java].freeze
-      CHECKSTYLE_VERSION = "7.0"
+      CHECKSTYLE_VERSION = "7.6"
 
       def initialize(root, engine_config, io)
         @root = root
