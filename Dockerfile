@@ -15,7 +15,7 @@ RUN echo 'deb http://ftp.de.debian.org/debian jessie-backports main' >> /etc/apt
     apt-get clean && \
     apt-get update && \
     apt-get install -y build-essential git && \
-    apt-get -y install openjdk-8-jdk && \
+    apt-get -y install -t jessie-backports openjdk-8-jdk ca-certificates-java && \
     update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java && \
     bundle && \
     apt-get remove -y build-essential git
