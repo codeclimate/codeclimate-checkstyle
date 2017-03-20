@@ -3,6 +3,8 @@
 require "nokogiri"
 require "yaml"
 
+original_content = File.read("./check_contents.yml")
+
 ATTRIBUTION_TEXT = <<-EOF
 <p>
 <i><a href="http://checkstyle.sourceforge.net/checks.html">This documentation is written and maintained by the Checkstyle community</a> and is <a href="http://checkstyle.sourceforge.net/license.html">covered under the same license as the Checkstyle project.</a></i>
@@ -57,3 +59,10 @@ end
 f = File.open("check_contents.yml", "wb")
 f << issue_content.to_yaml
 f.close
+
+new_content = File.read("./check_contents.yml")
+
+if ENV["CI"] && original_content != new_content
+  puts "Don't forget to run bin/scrape-docs"
+  exit 1
+end
