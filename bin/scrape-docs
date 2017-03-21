@@ -2,8 +2,10 @@
 
 require "nokogiri"
 require "yaml"
+require "./lib/cc/engine/version"
 
 original_content = File.read("./check_contents.yml")
+tag = "checkstyle-#{CC::Engine::Checkstyle::CHECKSTYLE_VERSION}"
 
 ATTRIBUTION_TEXT = <<-EOF
 <p>
@@ -13,9 +15,13 @@ EOF
 
 issue_content = {}
 
-if !Dir.exists? "data/"
-  `git clone git@github.com:checkstyle/checkstyle.git data/`
+if Dir.exists? "data/"
+  system "cd data && git checkout master && git pull origin master"
+else
+  system "git clone git@github.com:checkstyle/checkstyle.git data/"
 end
+
+system "cd data && git checkout #{tag}"
 
 xml_files = Dir.glob("data/src/xdocs/config_*")
 xml_data = xml_files.map{|f| Nokogiri::XML(File.read(f)) }
