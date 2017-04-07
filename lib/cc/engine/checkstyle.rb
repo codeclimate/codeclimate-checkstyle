@@ -3,13 +3,13 @@ require "json"
 require "posix/spawn"
 require "nokogiri"
 require "yaml"
+require "cc/engine/version"
 
 module CC
   module Engine
     class Checkstyle
       CONFIG_FILE = "./.mdlrc".freeze
       EXTENSIONS = %w[.java].freeze
-      CHECKSTYLE_VERSION = "7.6"
 
       def initialize(root, engine_config, io)
         @root = root
