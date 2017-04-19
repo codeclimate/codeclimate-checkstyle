@@ -12,12 +12,16 @@ ATTRIBUTION_TEXT = <<-EOF
 EOF
 
 issue_content = {}
+eval File.read("./lib/cc/engine/checkstyle.rb").lines.detect { |line| line.include?("CHECKSTYLE_VERSION = ") }
 
 if !Dir.exists? "data/"
-  `git clone git@github.com:checkstyle/checkstyle.git data/`
+  system "git clone git@github.com:checkstyle/checkstyle.git data/" or raise "clone failed"
 end
 
-xml_files = Dir.glob("data/src/xdocs/config_*")
+system "cd data && git checkout master 1>/dev/null 2>/dev/null && git pull origin master 1>/dev/null 2>/dev/null" or raise "pull failed"
+system "cd data && git checkout checkstyle-#{CHECKSTYLE_VERSION} 2>/dev/null" or raise "checkout failed"
+
+xml_files = Dir.glob("data/src/xdocs/config_*").sort
 xml_data = xml_files.map{|f| Nokogiri::XML(File.read(f)) }
 
 xml_data.each do |checks_file|
