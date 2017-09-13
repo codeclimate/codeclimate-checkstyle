@@ -27,14 +27,13 @@ RUN set -x \
 		openjdk8-jre="$JAVA_ALPINE_VERSION" \
 	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
+WORKDIR /usr/src/app
+
 COPY Gemfile /usr/src/app/
 COPY Gemfile.lock /usr/src/app/
 COPY bin/install-checkstyle.sh /usr/src/app/bin/
 
-RUN /usr/src/app/bin/install-checkstyle.sh
-
-WORKDIR /usr/src/app
-
+RUN ./bin/install-checkstyle.sh
 RUN apk add --update make g++ && bundle install
 
 VOLUME /code
