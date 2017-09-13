@@ -1,15 +1,14 @@
 .PHONY: image test
 
 IMAGE_NAME ?= codeclimate/codeclimate-checkstyle
+DOCKER_RUN = docker run --rm -w /usr/src/app -v $(PWD):/usr/src/app $(IMAGE_NAME)
 
 image:
 	docker build --rm -t $(IMAGE_NAME) .
 
 test: image
-	docker run --rm $(IMAGE_NAME) sh -c "echo Nothing to do yet!"
+	$(DOCKER_RUN) sh -c "echo Nothing to do yet!"
 
 upgrade:
-	docker run --rm \
-		--workdir /usr/src/app \
-		--volume $(PWD):/usr/src/app \
-		$(IMAGE_NAME) ./bin/upgrade.sh
+	$(DOCKER_RUN) ./bin/upgrade.sh
+	$(DOCKER_RUN) ./bin/scrape-docs

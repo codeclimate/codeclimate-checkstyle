@@ -34,7 +34,7 @@ COPY Gemfile.lock /usr/src/app/
 COPY bin/install-checkstyle.sh /usr/src/app/bin/
 
 RUN ./bin/install-checkstyle.sh
-RUN apk add --update make g++ && bundle install
+RUN apk add --update make g++ git && bundle install
 
 VOLUME /code
 WORKDIR /code

@@ -2,7 +2,3 @@ dependencies:
   override:
     - gem install bundler
     - bundle install
-
-test:
-  override:
-    - bin/scrape-docs

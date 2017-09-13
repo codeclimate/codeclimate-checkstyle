@@ -12,10 +12,10 @@ ATTRIBUTION_TEXT = <<-EOF
 EOF
 
 issue_content = {}
-eval File.read("./lib/cc/engine/checkstyle.rb").lines.detect { |line| line.include?("CHECKSTYLE_VERSION = ") }
+CHECKSTYLE_VERSION = File.read('CHECKSTYLE_VERSION').chomp
 
 if !Dir.exists? "data/"
-  system "git clone git@github.com:checkstyle/checkstyle.git data/" or raise "clone failed"
+  system "git clone https://github.com/checkstyle/checkstyle.git data/" or raise "clone failed"
 end
 
 system "cd data && git checkout master 1>/dev/null 2>/dev/null && git pull origin master 1>/dev/null 2>/dev/null" or raise "pull failed"
