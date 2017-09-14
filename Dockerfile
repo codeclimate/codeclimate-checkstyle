@@ -39,6 +39,7 @@ RUN apk add --update make g++ git && bundle install
 VOLUME /code
 WORKDIR /code
 COPY . /usr/src/app
+RUN chown -R app:app /usr/src/app
 
 USER app
 

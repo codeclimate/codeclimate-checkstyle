@@ -7,7 +7,7 @@ image:
 	docker build --rm -t $(IMAGE_NAME) .
 
 test: image
-	$(DOCKER_RUN) sh -c "echo Nothing to do yet!"
+	docker run -w /usr/src/app --rm $(IMAGE_NAME) rspec
 
 upgrade:
 	$(DOCKER_RUN) ./bin/upgrade.sh
