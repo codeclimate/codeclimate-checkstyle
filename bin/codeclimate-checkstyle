@@ -13,8 +13,4 @@ else
   engine_config = {}
 end
 
-begin
-  CC::Engine::Checkstyle.new("/code", engine_config, STDOUT).run
-rescue => e
-  abort e.message
-end
+CC::Engine::Checkstyle.new("/code", engine_config, STDOUT).run
