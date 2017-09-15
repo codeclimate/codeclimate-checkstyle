@@ -50,12 +50,24 @@ module CC
       end
 
       def config_path
-        return "/usr/src/app/config/codeclimate_checkstyle.xml" unless @engine_config["config"]
+        return "/usr/src/app/config/codeclimate_checkstyle.xml" unless config
 
-        if File.exists?(@engine_config["config"])
-          return "/code/#{@engine_config["config"]}"
+        if File.exists?(config_file)
+          return "/code/#{config_file}"
         else
-          raise "Config file '#{@engine_config["config"]}' not found"
+          raise "Config file '#{config_file}' not found"
+        end
+      end
+
+      def config
+        @engine_config["config"]
+      end
+
+      def config_file
+        if config.is_a? Hash
+          config["file"]
+        else
+          config
         end
       end
 

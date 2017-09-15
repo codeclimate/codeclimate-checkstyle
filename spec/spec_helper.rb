@@ -25,3 +25,19 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+RSpec::Matchers.define :be_an_issue do
+  match do |actual|
+    begin
+      json = JSON.parse(actual.gsub("\0", ""))
+      expect(json).to include("type" => "issue")
+    rescue
+      false
+    end
+  end
+
+  description do
+    "respect issue format"
+  end
+end
+
