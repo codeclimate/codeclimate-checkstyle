@@ -50,7 +50,7 @@ module CC
       end
 
       def config_path
-        return "/usr/src/app/config/codeclimate_checkstyle.xml" unless config
+        return "/usr/src/app/config/codeclimate_checkstyle.xml" unless config_file
 
         if File.exists?(config_file)
           return "#{Dir.pwd}/#{config_file}"

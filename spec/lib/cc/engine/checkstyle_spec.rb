@@ -30,7 +30,14 @@ module CC
 
       it "accepts config hash" do
         run_with(
-          "config" => "config/codeclimate_checkstyle.xml",
+          "config" => { "file" => "config/codeclimate_checkstyle.xml" },
+          "include_paths" => ["fixtures/Main.java"],
+        )
+      end
+
+      it "accepts config hash without file" do
+        run_with(
+          "config" => { "key" => "value" },
           "include_paths" => ["fixtures/Main.java"],
         )
       end
