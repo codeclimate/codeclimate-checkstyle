@@ -53,7 +53,7 @@ module CC
         return "/usr/src/app/config/codeclimate_checkstyle.xml" unless config
 
         if File.exists?(config_file)
-          return "/code/#{config_file}"
+          return "#{Dir.pwd}/#{config_file}"
         else
           raise "Config file '#{config_file}' not found"
         end

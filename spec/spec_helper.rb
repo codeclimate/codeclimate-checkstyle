@@ -40,4 +40,3 @@ RSpec::Matchers.define :be_an_issue do
     "respect issue format"
   end
 end
-
