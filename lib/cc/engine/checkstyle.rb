@@ -50,14 +50,29 @@ module CC
       end
 
       def config_path
-        if @engine_config["config"] && File.exists?(@engine_config["config"])
-          return "/code/#{@engine_config["config"]}"
+        return "/usr/src/app/config/codeclimate_checkstyle.xml" unless config_file
+
+        if File.exists?(config_file)
+          return "#{Dir.pwd}/#{config_file}"
+        else
+          raise "Config file '#{config_file}' not found"
         end
-        "/usr/src/app/config/codeclimate_checkstyle.xml"
+      end
+
+      def config
+        @engine_config["config"]
+      end
+
+      def config_file
+        if config.is_a? Hash
+          config["file"]
+        else
+          config
+        end
       end
 
       def command_string
-        "java -jar /usr/src/app/bin/checkstyle.jar -c #{config_path} -f xml #{include_paths}"
+        "java -jar /usr/local/bin/checkstyle.jar -c #{config_path} -f xml #{include_paths}"
       end
 
       def format_check_name(issue_name)
@@ -105,7 +120,7 @@ module CC
           remediation_points: 100_000,
           severity: format_severity(issue.attributes["severity"].value),
         }
-        STDOUT.print "#{issue.to_json}\0"
+        io.print "#{issue.to_json}\0"
       end
 
     end
