@@ -72,7 +72,7 @@ module CC
       end
 
       def command_string
-        "java -jar /usr/src/app/bin/checkstyle.jar -c #{config_path} -f xml #{include_paths}"
+        "java -jar /usr/local/bin/checkstyle.jar -c #{config_path} -f xml #{include_paths}"
       end
 
       def format_check_name(issue_name)
