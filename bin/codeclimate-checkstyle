@@ -7,10 +7,13 @@ $:.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
 
 require "cc/engine/checkstyle"
 
-if File.exist?("/config.json")
-  engine_config = JSON.parse(File.read("/config.json"))
+config_file = ARGV[0] || "/config.json"
+
+if File.exist?(config_file)
+  engine_config = JSON.parse(File.read(config_file))
 else
   engine_config = {}
 end
 
 CC::Engine::Checkstyle.new("/code", engine_config, STDOUT).run
+exit($?.exitstatus)
