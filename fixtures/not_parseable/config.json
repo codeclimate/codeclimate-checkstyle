@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "include_paths": [
+    "/usr/src/app/fixtures/not_parseable/Template.java"
+  ]
+}

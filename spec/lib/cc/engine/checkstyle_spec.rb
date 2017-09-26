@@ -18,27 +18,27 @@ module CC
       end
 
       it "uses default config" do
-        run_with("include_paths" => ["fixtures/Main.java"])
+        run_with("include_paths" => ["fixtures/default/Main.java"])
       end
 
       it "accepts config path" do
         run_with(
           "config" => "config/codeclimate_checkstyle.xml",
-          "include_paths" => ["fixtures/Main.java"],
+          "include_paths" => ["fixtures/default/Main.java"],
         )
       end
 
       it "accepts config hash" do
         run_with(
           "config" => { "file" => "config/codeclimate_checkstyle.xml" },
-          "include_paths" => ["fixtures/Main.java"],
+          "include_paths" => ["fixtures/default/Main.java"],
         )
       end
 
       it "accepts config hash without file" do
         run_with(
           "config" => { "key" => "value" },
-          "include_paths" => ["fixtures/Main.java"],
+          "include_paths" => ["fixtures/default/Main.java"],
         )
       end
 
