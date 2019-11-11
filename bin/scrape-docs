@@ -15,7 +15,7 @@ issue_content = {}
 CHECKSTYLE_VERSION = File.read('CHECKSTYLE_VERSION').chomp
 
 if !Dir.exists? "data/"
-  system "git clone https://github.com/checkstyle/checkstyle.git data/" or raise "clone failed"
+  system "git clone --shallow-since=2019-01-01 https://github.com/checkstyle/checkstyle.git data/" or raise "clone failed"
 end
 
 system "cd data && git checkout master 1>/dev/null 2>/dev/null && git pull origin master 1>/dev/null 2>/dev/null" or raise "pull failed"
