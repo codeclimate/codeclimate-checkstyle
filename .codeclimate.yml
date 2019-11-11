@@ -1,0 +1,5 @@
+engines:
+  checkstyle:
+    enabled: true
+exclude_patterns:
+  - fixtures/not_parseable
