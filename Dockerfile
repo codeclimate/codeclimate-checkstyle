@@ -1,4 +1,4 @@
-FROM ruby:2.3.0-alpine
+FROM ruby:2.6.3-alpine
 
 ENV LANG C.UTF-8
 
@@ -19,8 +19,8 @@ RUN { \
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 
-ENV JAVA_VERSION 8u92
-ENV JAVA_ALPINE_VERSION 8.92.14-r0
+ENV JAVA_VERSION 8u222
+ENV JAVA_ALPINE_VERSION 8.222.10-r0
 
 RUN set -x \
 	&& apk update && apk add --no-cache --update \
@@ -35,7 +35,7 @@ COPY bin/install-checkstyle.sh /usr/src/app/bin/
 RUN chown -R app:app /usr/src/app
 
 RUN ./bin/install-checkstyle.sh
-RUN apk add --update make g++ git && bundle install
+RUN apk add --update make g++ git curl && bundle install
 
 VOLUME /code
 WORKDIR /code
