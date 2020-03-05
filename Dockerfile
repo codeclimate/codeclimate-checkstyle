@@ -19,8 +19,8 @@ RUN { \
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 
-ENV JAVA_VERSION 8u222
-ENV JAVA_ALPINE_VERSION 8.222.10-r0
+ENV JAVA_VERSION 8u242
+ENV JAVA_ALPINE_VERSION 8.242.08-r0
 
 RUN set -x \
 	&& apk update && apk add --no-cache --update \
