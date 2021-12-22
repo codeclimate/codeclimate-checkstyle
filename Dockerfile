@@ -2,7 +2,7 @@ FROM ruby:2.6.3-alpine
 
 ENV LANG C.UTF-8
 
-MAINTAINER "Code Climate <hello@codeclimate.com>"
+LABEL org.opencontainers.image.authors="Code Climate <hello@codeclimate.com>"
 
 RUN adduser -u 9000 -D app
 
