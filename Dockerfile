@@ -2,7 +2,7 @@ FROM ruby:2.6.3-alpine
 
 ENV LANG C.UTF-8
 
-LABEL org.opencontainers.image.authors="Code Climate <hello@codeclimate.com>"
+MAINTAINER "Code Climate <hello@codeclimate.com>"
 
 RUN adduser -u 9000 -D app
 
@@ -19,7 +19,7 @@ RUN { \
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 
-ENV JAVA_VERSION 8u275
+ENV JAVA_VERSION 8u252
 ENV JAVA_ALPINE_VERSION 8.275.01-r0
 
 RUN set -x \
