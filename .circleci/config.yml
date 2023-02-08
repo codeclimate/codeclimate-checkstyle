@@ -30,7 +30,7 @@ jobs:
           name: Push image to Dockerhub
           command: |
             make release RELEASE_TAG="b$CIRCLE_BUILD_NUM"
-            make release RELEASE_TAG="$(echo $CIRCLE_BRANCH | grep -oP 'channel/\K[\w\-]+' || echo stable)"
+            make release RELEASE_TAG="$(echo $CIRCLE_BRANCH | grep -oP 'channel/\K[\w\-]+')"
 
 workflows:
   version: 2
