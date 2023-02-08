@@ -19,5 +19,5 @@ upgrade:
 	$(DOCKER_RUN_MOUNTED) $(IMAGE_NAME) ./bin/scrape-docs
 
 release:
-	docker tag $(IMAGE_NAME) $(RELEASE_REGISTRY)/codeclimate-bundler-audit:$(RELEASE_TAG)
-	docker push $(RELEASE_REGISTRY)/codeclimate-bundler-audit:$(RELEASE_TAG)
+	docker tag $(IMAGE_NAME) $(RELEASE_REGISTRY)/codeclimate-checkstyle:$(RELEASE_TAG)
+	docker push $(RELEASE_REGISTRY)/codeclimate-checkstyle:$(RELEASE_TAG)
