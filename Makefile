@@ -2,8 +2,11 @@
 
 IMAGE_NAME ?= codeclimate/codeclimate-checkstyle
 RELEASE_REGISTRY ?= codeclimate
-RELEASE_TAG ?= latest
 DOCKER_RUN_MOUNTED = docker run --rm --user=root -w /usr/src/app -v $(PWD):/usr/src/app
+
+ifndef RELEASE_TAG
+override RELEASE_TAG = latest
+endif
 
 image:
 	docker build --rm -t $(IMAGE_NAME) .
